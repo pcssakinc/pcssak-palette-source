@@ -4,9 +4,16 @@
 
 We welcome bug reports, usability experiences, translations, tests, documentation and focused code proposals. First-hand color-vision experiences are valuable; a diagnosis, real name or private image is not required. Questions in any language are welcome, and translation assistance may be used.
 
+## Choose a place to start
+
+- New here? Read the [welcome and reply with one experience](https://github.com/pcssakinc/pcssak-palette-source/discussions/1). Questions and early ideas belong in [Discussions](https://github.com/pcssakinc/pcssak-palette-source/discussions); coding is optional.
+- Reproducible source-build bugs and agreed work belong in [source issues](https://github.com/pcssakinc/pcssak-palette-source/issues). See [beginner-friendly tasks](https://github.com/pcssakinc/pcssak-palette-source/issues?q=is%3Aissue%20is%3Aopen%20label%3A%22good%20first%20issue%22).
+- Existing installer problems belong in [Palette release issues](https://github.com/pcssakinc/pcssak-palette-releases/issues). Say whether you used an installer or a source build, and give its app version or source commit. They are not interchangeable releases.
+- Vulnerabilities must use the [private security route](SECURITY.md), not public conversations or issues.
+
 ## Start small
 
-1. Check existing reports in [Palette release issues](https://github.com/pcssakinc/pcssak-palette-releases/issues). Explain the task you tried, the expected result and what happened.
+1. Check existing discussions and issues in the matching place above. Explain the task you tried, the expected result and what happened. For an open task, comment with the small part you would like to help with before starting, to avoid duplicate effort.
 2. For substantial work, discuss the scope before spending time. A suggestion is not a promise of implementation, payment or merge.
 3. Submit source changes through a fork and pull request in this repository. Describe the change, tests, known limitations and any third-party material or AI assistance.
 4. Prefer synthetic examples. Remove names, private paths, credentials, customer content and image metadata from reports.
