@@ -1,8 +1,11 @@
 blank_issues_enabled: false
 contact_links:
-  - name: 일반 질문·사용자 지원 / Questions and support
+  - name: 질문·사용 경험·아이디어 / Questions, experiences and ideas
+    url: https://github.com/pcssakinc/pcssak-palette-source/discussions
+    about: 코딩을 몰라도 어떤 언어로든 참여할 수 있습니다. 개인정보를 올리지 마세요. Any language is welcome; do not post personal information.
+  - name: 기존 설치본 문제 / Existing installer problems
     url: https://github.com/pcssakinc/pcssak-palette-releases/issues
-    about: 기존 설치본의 질문도 이 경로에서 받을 수 있습니다. 개인정보를 올리지 마세요.
+    about: 소스 빌드와 구분해 앱 버전을 알려 주세요. State the app version and distinguish it from a source build.
   - name: 비공개 보안 제보 / Private security report
     url: mailto:support@pcssak.com
     about: 취약점·공격 재현 정보는 공개 이슈에 올리지 말고 제목에 Palette 보안이라고 적어 주세요.

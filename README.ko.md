@@ -4,6 +4,19 @@
 
 Palette는 팔레트를 만들고 글자·배경 대비를 검토하는 도구입니다. 색각이상 당사자가 스스로 디자인을 결정하도록 돕는 것을 중요한 목표로 삼고, 실제 사용자의 경험을 바탕으로 개선합니다.
 
+## 여기서 시작하세요 — 사용·질문·작은 참여
+
+**[제작자의 첫 인사와 함께 만드는 이야기](https://github.com/pcssakinc/pcssak-palette-source/discussions/1)** — 더 쉬워졌으면 하는 작업 한 가지를 알려 주세요. 코딩을 몰라도 괜찮으며 어떤 언어든 환영합니다.
+
+| 하고 싶은 일 | 시작하는 곳 |
+| --- | --- |
+| 기존 윈도우 프로그램 사용 | [공식 다운로드와 버전 안내](https://github.com/pcssakinc/pcssak-palette-releases/releases) |
+| 질문·사용 경험·아이디어 공유 | [커뮤니티 대화](https://github.com/pcssakinc/pcssak-palette-source/discussions) |
+| 작은 소스·문서 개선에 참여 | [처음 참여하기 좋은 과제](https://github.com/pcssakinc/pcssak-palette-source/issues?q=is%3Aissue%20is%3Aopen%20label%3A%22good%20first%20issue%22) · [기여 안내](CONTRIBUTING.ko.md) |
+| 보안 취약점 제보 | 공개 댓글이 아닌 [비공개 보안 제보](SECURITY.ko.md) |
+
+기존 설치본과 이 소스는 서로 다른 릴리스입니다. 재현 가능한 오류는 앱 버전을 적어 [설치본 제보](https://github.com/pcssakinc/pcssak-palette-releases/issues)에, 소스 커밋을 적어 [소스 제보](https://github.com/pcssakinc/pcssak-palette-source/issues)에 남겨 주세요. 진단서·실명·개인 이미지는 필요하지 않으며 공유 전 개인정보를 제거해 주세요.
+
 ## 공개 범위
 
 색각이상 지원과 과거 유료·Pro용으로 준비한 코드를 포함한 Palette 전체 구현을 공개합니다. 비밀키·개인자료·타제품·내부 운영 기록은 제외합니다. 소스 공개가 미완성 기능의 완성을 뜻하지는 않습니다. 기존 internal-pro 빌드 선택은 실험 기능을 명시적으로 시험하는 장치이며, 구매나 공식 유료 서비스 이용권을 뜻하지 않습니다.
@@ -31,4 +44,4 @@ PCSSAK는 한 명의 개발자가 AI의 도움을 받아 개발·운영합니다
 
 적용 라이선스 조건을 지키는 무료·유료 재배포를 허용합니다. 의무 로열티·판매 사전 연락·원본 저장소로의 수정 제출 의무는 없습니다. 연락과 후원은 자발적입니다. 단순 사용으로 만든 일반 팔레트·디자인 결과물에 PCSSAK 표시 의무를 추가하지 않습니다.
 
-언어에 관계없이 [소스 저장소 이슈](https://github.com/pcssakinc/pcssak-palette-source/issues)로 질문·의견을 보내 주세요. 기존 설치본은 [Palette 배포 이슈](https://github.com/pcssakinc/pcssak-palette-releases/issues)도 이용할 수 있습니다. 게시 전에 [개인정보 안내](docs/PRIVACY.md)를 확인하고, 취약점은 [비공개 보안 경로](SECURITY.ko.md)를 이용하세요.
+언어에 관계없이 [커뮤니티 대화](https://github.com/pcssakinc/pcssak-palette-source/discussions)로 질문·경험을 나눠 주세요. 재현 가능한 소스 문제와 정리된 과제는 [소스 이슈](https://github.com/pcssakinc/pcssak-palette-source/issues), 기존 설치본 문제는 [Palette 배포 이슈](https://github.com/pcssakinc/pcssak-palette-releases/issues)를 이용하세요. 게시 전에 [개인정보 안내](docs/PRIVACY.md)를 확인하고, 취약점은 [비공개 보안 경로](SECURITY.ko.md)를 이용하세요.
