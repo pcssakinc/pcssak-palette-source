@@ -51,10 +51,19 @@ jobs:
 
       # 공유 캐시를 복원하거나 저장하지 않습니다. 새 러너에서 필요한 의존성을 받습니다.
       - name: 라이선스 검사 도구 준비
-        run: cargo install cargo-about --version 0.9.1 --locked
+        run: |
+          # 실행 파일은 cli 기능을 명시해야 설치됩니다. 설치 성공만으로 실행 가능하다고 판단하지 않습니다.
+          cargo install cargo-about --version 0.9.1 --locked --features cli
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          cargo about --version
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       - name: 공급망 검사 도구 준비
-        run: cargo install cargo-deny --version 0.19.9 --locked
+        run: |
+          cargo install cargo-deny --version 0.19.9 --locked
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          cargo deny --version
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       - name: 프런트엔드 시험
         run: npm test

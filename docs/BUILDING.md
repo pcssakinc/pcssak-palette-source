@@ -23,9 +23,15 @@ cargo --version
 Install the two audit tools if needed; these commands download and execute build dependencies:
 
 ~~~powershell
-cargo install cargo-about --version 0.9.1 --locked
+cargo install cargo-about --version 0.9.1 --locked --features cli
+cargo about --version
 cargo install cargo-deny --version 0.19.9 --locked
+cargo deny --version
 ~~~
+
+The cli feature is required to install the cargo-about executable. Check that each tool runs before continuing; a successful compilation without an executable is not a successful tool setup.
+
+cargo-about 실행 파일 설치에는 cli 기능 선택이 필요합니다. 각 도구의 버전 명령이 실제로 실행되는지 확인한 뒤 진행하세요. 실행 파일 없이 컴파일만 끝난 상태는 설치 완료가 아닙니다.
 
 ## Install, test and build
 
