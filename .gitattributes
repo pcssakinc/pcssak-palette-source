@@ -1,0 +1,35 @@
+* text=auto
+.gitattributes text eol=lf
+
+*.js text eol=lf
+*.jsx text eol=lf
+*.ts text eol=lf
+*.tsx text eol=lf
+*.json text eol=lf
+*.toml text eol=lf
+*.rs text eol=lf
+# Cargo 잠금 파일은 도구와 플랫폼에 관계없이 표준 LF를 유지합니다.
+src-tauri/Cargo.lock text eol=lf
+*.css text eol=lf
+*.html text eol=lf
+*.mjs text eol=lf
+# GitHub Actions 정책 파일은 플랫폼과 관계없이 LF를 유지합니다.
+*.yml text eol=lf
+*.yaml text eol=lf
+THIRD-PARTY-NOTICES.txt text eol=lf
+*.md text eol=lf
+
+# 고정 NSIS 템플릿은 원본 복원 해시와 블록 비교를 위해 LF를 유지합니다.
+src-tauri/installer/installer.nsi text eol=lf
+# 설치기 훅도 템플릿에 삽입되므로 플랫폼과 관계없이 LF를 유지합니다.
+src-tauri/installer/hooks.nsh text eol=lf
+# Windows NSIS가 읽는 다국어 EULA는 CRLF 계약을 유지합니다.
+src-tauri/installer/eula/*.txt text eol=crlf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.icns binary

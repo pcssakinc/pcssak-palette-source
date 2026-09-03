@@ -1,0 +1,48 @@
+[package]
+name = "pcssak-palette"
+version = "0.1.8"
+description = "PCssak Palette — local-first OKLCH color-ramp generator with WCAG 2.2 checking"
+authors = ["PCssak"]
+edition = "2021"
+rust-version = "1.77.2"
+publish = false        # 공개 소스와 패키지 레지스트리 게시는 별개입니다.
+license = "GPL-3.0-only"
+
+[features]
+default = []
+# 공개 베타의 GitHub 서명 업데이트 채널입니다. Store 빌드와 함께 켜지 않습니다.
+beta-updater = []
+# 내부 QA 전용입니다. build.rs의 별도 확인값 없이는 컴파일되지 않습니다.
+internal-pro = []
+# Microsoft StoreContext 연동용 예약 기능입니다. 실제 연동 전에는 Free만 반환합니다.
+store = []
+
+[lib]
+name = "pcssak_palette_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-dialog = "2"
+tauri-plugin-clipboard-manager = "2"
+tauri-plugin-process = "2"
+tauri-plugin-updater = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+# Image decoding restricted to safe, patent-clean formats only (NO HEIC/AVIF) — see LICENSING-LEGAL.md
+image = { version = "0.25", default-features = false, features = ["png", "jpeg", "webp", "gif", "bmp"] }
+kmeans_colors = "0.6"
+palette = "0.7"
+
+[profile.release]
+opt-level = "s"
+lto = true
+strip = true
+codegen-units = 1
+panic = "abort"
+
+[target.'cfg(any(target_os = "macos", windows, target_os = "linux"))'.dependencies]
+tauri-plugin-single-instance = "2"

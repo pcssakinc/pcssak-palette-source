@@ -1,0 +1,50 @@
+name: 오류 제보 / Bug report
+description: 최소한의 정보로 재현 가능한 Palette 오류를 알려 주세요.
+title: '[오류] '
+body:
+  - type: markdown
+    attributes:
+      value: |
+        어떤 언어로든 작성할 수 있습니다. Questions in any language are welcome.
+        취약점은 공개하지 말고 support@pcssak.com으로 알려 주세요.
+        개인 경로·인증정보·고객 파일·진단서·원시 로그·민감한 이미지 메타데이터를 올리지 마세요.
+        합성 예제를 우선하며 완전한 설치기나 사용자 자료는 필요하지 않습니다.
+  - type: input
+    id: version
+    attributes:
+      label: 앱 버전 또는 공개 소스 커밋 / Version or source commit
+      description: 공식 배포본인지 직접 빌드한 것인지도 구분해 주세요.
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Windows 버전과 앱 아키텍처 / Environment
+      description: 예를 들어 Windows 11의 x64 앱. 사용자 이름이나 PC 이름은 필요하지 않습니다.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: 하려던 작업과 최소 재현 절차 / Reproduction
+      description: 문제가 난 순서와 관련 설정만 적어 주세요.
+    validations:
+      required: true
+  - type: textarea
+    id: result
+    attributes:
+      label: 기대한 결과와 실제 결과 / Expected and actual result
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: 선택 사항 — 개인정보를 제거한 예제 / Optional sanitized example
+      description: 필요한 색상 값·합성 이미지·짧은 오류 문구만 제공해 주세요. 원시 로그 전체는 올리지 마세요.
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: 공개 범위 확인
+      options:
+        - label: 개인정보·비밀정보·허가받지 않은 타인 자료를 제거했습니다.
+          required: true

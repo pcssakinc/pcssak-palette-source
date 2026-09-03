@@ -1,0 +1,71 @@
+# 공개 Palette 소스의 Windows 공급망·라이선스 정책입니다.
+# 실행 예: cargo deny --manifest-path src-tauri/Cargo.toml check
+# 이 검사는 실제 출처·고지·결합 조건과 전체 보안을 대신하지 않습니다.
+
+[graph]
+# 현재 공개 후보가 검토하는 Windows 앱 대상만 지정합니다.
+# 대상 목록은 각 운영체제·아키텍처 실기 시험의 통과 선언이 아닙니다.
+targets = [
+  "x86_64-pc-windows-msvc",
+  "i686-pc-windows-msvc",
+]
+
+[licenses]
+version = 2
+# 자체 공개 코드의 GPL-3.0-only와 기존 제3자 허용 목록입니다.
+# 허용 식별자만으로 모든 결합·특허·출처 조건을 충족했다고 판정하지 않습니다.
+# MPL 파일은 원고지·소스 제공·GPL 결합 조건을 별도로 준수합니다.
+# BSL-1.0은 Boost 라이선스이며 Business Source License와 다릅니다.
+allow = [
+  "GPL-3.0-only",
+  "MIT",
+  "Apache-2.0",
+  "Apache-2.0 WITH LLVM-exception",
+  "BSD-2-Clause",
+  "BSD-3-Clause",
+  "ISC",
+  "BSL-1.0",
+  "Zlib",
+  "Unicode-3.0",
+  "Unicode-DFS-2016",
+  "MPL-2.0",
+  "CC0-1.0",
+  "OFL-1.1",
+]
+confidence-threshold = 0.9
+# 패키지 게시 여부와 저작권 라이선스는 별개이므로 자체 루트도 검사합니다.
+private = { ignore = false }
+
+[bans]
+# 기존 색상 엔진의 설계 선택을 유지합니다.
+# 공개 소스에 GPL을 적용하더라도 이미지 양자화 엔진을 자동 교체하지 않습니다.
+# 아래 목록은 해당 라이브러리가 불법·항상 비호환이라는 판정이 아닙니다.
+deny = [
+  { name = "imagequant" },
+  { name = "libimagequant" },
+  { name = "libimagequant-sys" },
+]
+
+[advisories]
+version = 2
+yanked = "deny"
+# 과거 정책에서 이월한 개별 권고 예외 7개입니다. 새 예외를 추가한 것은 아닙니다.
+# 이 목록의 권고는 검사 차단에서 제외되므로 통과를 해당 문제의 해결·무해함으로 읽지 않습니다.
+# 유지보수 중단은 그 자체로 취약점 확정도, 보안 영향이 없다는 보증도 아닙니다.
+# 현재 잠금 그래프·Windows 도달 경로·실제 권고 내용을 함께 검토해야 합니다.
+# Tauri·도구·잠금 파일·지원 대상 변경 때 최신 원문과 대체 경로를 다시 확인하고,
+# 더 이상 도달하지 않거나 해결된 예외는 근거를 남겨 제거합니다.
+# 목록 밖의 권고와 정책 위반은 기존 검사 규칙을 따릅니다.
+ignore = [
+  "RUSTSEC-2025-0098",
+  "RUSTSEC-2022-0104",
+  "RUSTSEC-2024-0370",
+  "RUSTSEC-2025-0075",
+  "RUSTSEC-2025-0080",
+  "RUSTSEC-2025-0081",
+  "RUSTSEC-2025-0100",
+]
+
+[sources]
+unknown-registry = "deny"
+unknown-git = "deny"

@@ -1,0 +1,55 @@
+{
+  "name": "pcssak-palette",
+  "private": true,
+  "version": "0.1.8",
+  "type": "module",
+  "description": "Local-first OKLCH color-ramp generator with WCAG 2.2 contrast and approximate color-vision checks.",
+  "engines": {
+    "node": "24.18.0",
+    "npm": "11.16.0"
+  },
+  "packageManager": "npm@11.16.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "npm run toolchain:check && tsc --noEmit && vite build && npm run bundle:check",
+    "build:release": "npm run licenses:check && npm run docs:check && npm run installer:check && npm run build",
+    "docs:check": "node scripts/verify-public-source.mjs",
+    "installer:check": "node scripts/verify-source-license.mjs && node scripts/verify-installer-localization.mjs",
+    "installer:license:generate": "node scripts/verify-source-license.mjs --write",
+    "bundle:check": "node scripts/verify-bundle-size.mjs",
+    "toolchain:check": "node scripts/verify-toolchain.mjs",
+    "licenses:generate": "node scripts/generate-third-party-notices.mjs",
+    "licenses:check": "node scripts/generate-third-party-notices.mjs --check",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "tauri": "tauri"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "^2.0.0",
+    "@tauri-apps/plugin-clipboard-manager": "^2.0.0",
+    "@tauri-apps/plugin-dialog": "^2.0.0",
+    "@tauri-apps/plugin-process": "^2.3.1",
+    "@tauri-apps/plugin-updater": "^2.10.1",
+    "culori": "^4.0.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "2.11.4",
+    "@types/culori": "^2.1.1",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^6.0.3",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.5.18",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.6.3",
+    "vite": "^8.1.4",
+    "vitest": "^4.1.10"
+  },
+  "overrides": {
+    "nanoid": "3.3.18"
+  },
+  "license": "GPL-3.0-only"
+}

@@ -1,0 +1,83 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "PCssak Palette Source",
+  "version": "0.1.8",
+  "identifier": "com.pcssak.palette.source",
+  "build": {
+    "frontendDist": "../dist",
+    "devUrl": "http://localhost:1420",
+    "beforeDevCommand": "npm run dev",
+    "beforeBuildCommand": "npm run build:release"
+  },
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "PCssak Palette Source",
+        "width": 1000,
+        "height": 720,
+        "minWidth": 720,
+        "minHeight": 560,
+        "dragDropEnabled": true
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; img-src 'self' asset: data: http://asset.localhost; style-src 'self' 'unsafe-inline'"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "category": "DeveloperTool",
+    "licenseFile": "installer/eula/en.txt",
+    "resources": {
+      "../THIRD-PARTY-NOTICES.txt": "THIRD-PARTY-NOTICES.txt",
+      "../docs/PRIVACY.md": "PRIVACY.md",
+      "installer/eula/en.txt": "EULA/en.txt",
+      "installer/eula/ko.txt": "EULA/ko.txt",
+      "installer/eula/ja.txt": "EULA/ja.txt",
+      "installer/eula/zh-Hans.txt": "EULA/zh-Hans.txt",
+      "installer/eula/zh-Hant.txt": "EULA/zh-Hant.txt",
+      "installer/eula/fr.txt": "EULA/fr.txt",
+      "installer/eula/de.txt": "EULA/de.txt",
+      "installer/eula/ru.txt": "EULA/ru.txt",
+      "installer/eula/es.txt": "EULA/es.txt",
+      "installer/eula/es-419.txt": "EULA/es-419.txt",
+      "installer/eula/pt-BR.txt": "EULA/pt-BR.txt",
+      "installer/eula/tr.txt": "EULA/tr.txt",
+      "../LICENSE": "LICENSE",
+      "../COPYRIGHT.md": "COPYRIGHT.md"
+    },
+    "windows": {
+      "nsis": {
+        "template": "installer/installer.nsi",
+        "installerHooks": "installer/hooks.nsh",
+        "languages": [
+          "English",
+          "Korean",
+          "Japanese",
+          "SimpChinese",
+          "TradChinese",
+          "French",
+          "German",
+          "Russian",
+          "Spanish",
+          "SpanishInternational",
+          "PortugueseBR",
+          "Turkish"
+        ],
+        "displayLanguageSelector": true
+      }
+    },
+    "copyright": "© 2026 PCssak",
+    "shortDescription": "Local-first OKLCH color-ramp generator",
+    "longDescription": "Turn an image or hex color into a locally processed OKLCH 50–950 tonal ramp, review WCAG 2.2 contrast and color-vision confusion risks, and save CSS. No account, analytics, ads, or tracking."
+  }
+}

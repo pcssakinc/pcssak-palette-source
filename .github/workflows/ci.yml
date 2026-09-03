@@ -1,0 +1,78 @@
+name: Palette source checks
+
+"on":
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  windows-source:
+    name: Windows source validation
+    runs-on: windows-2025
+    timeout-minutes: 45
+    defaults:
+      run:
+        shell: pwsh
+    env:
+      CARGO_TERM_COLOR: never
+      CARGO_INCREMENTAL: '0'
+    steps:
+      # 공식 작업의 전체 커밋에 고정합니다. 작업 트리에 인증정보를 남기지 않습니다.
+      - name: 소스 가져오기
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          submodules: false
+          lfs: false
+
+      - name: 고정 Node.js 준비
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '24.18.0'
+          architecture: x64
+          package-manager-cache: false
+
+      - name: 고정 npm 준비
+        run: npm install --global npm@11.16.0 --ignore-scripts --no-fund --no-audit
+
+      - name: 공개 파일 경계 검사
+        run: node scripts/verify-public-source.mjs
+
+      - name: 도구 체인 검사
+        run: npm run toolchain:check
+
+      - name: 잠금 파일에 따른 의존성 설치
+        run: npm ci --ignore-scripts --no-fund
+
+      # 공유 캐시를 복원하거나 저장하지 않습니다. 새 러너에서 필요한 의존성을 받습니다.
+      - name: 라이선스 검사 도구 준비
+        run: cargo install cargo-about --version 0.9.1 --locked
+
+      - name: 공급망 검사 도구 준비
+        run: cargo install cargo-deny --version 0.19.9 --locked
+
+      - name: 프런트엔드 시험
+        run: npm test
+
+      - name: 잠금 Rust 의존성 준비
+        run: cargo fetch --manifest-path src-tauri/Cargo.toml --locked
+
+      - name: 공개 문서·라이선스·설치 안내·프런트엔드 빌드
+        run: npm run build:release
+
+      - name: Rust 라이브러리 시험
+        run: cargo test --manifest-path src-tauri/Cargo.toml --locked --lib
+
+      - name: npm 공급망 검사
+        run: npm audit
+
+      - name: Rust 공급망 검사
+        run: cargo deny --manifest-path src-tauri/Cargo.toml check
+
+      # 이 작업은 설치기 생성·서명·배포·산출물 업로드를 하지 않습니다.
+      # 환경변수 전체, 인증 설정, 개인 경로가 담긴 원시 로그를 출력하지 않습니다.

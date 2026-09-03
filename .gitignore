@@ -1,0 +1,27 @@
+# 의존성·생성 파일·개인 환경은 소스에 포함하지 않습니다.
+node_modules/
+dist/
+target/
+src-tauri/target/
+src-tauri/gen/
+.env
+.env.*
+.npmrc
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.tsbuildinfo
+*.log
+*.msi
+*.msix
+*.appx
+*.exe
+*.zip
+*.pfx
+*.p12
+*.key
+*.pcssak-keybackup
+*.pem
+*.cer
+*.crt
