@@ -1,0 +1,162 @@
+# 보안 검사 — 자체 CI 허브(ci-hub)가 추가함(2026-10-29). 모두 무료 도구다.
+#   1) 비밀키 유출 검사(gitleaks): 커밋 이력 전체. 찾은 값은 가리고(--redact) 위치·규칙·지문만 요약에 남긴다.
+#   2) 의존성 취약점 검사(osv-scanner): 저장소 안의 잠금 파일 전부. 매일 밤에도 돌아, 코드가 그대로여도
+#      새로 공개된 취약점을 잡는다. PR 에서는 경고만, 기본 브랜치·야간 실행에서는 실패로 알린다.
+#   3) 코드 보안 분석(Semgrep CE, 규칙 p/default): 지금은 알림만(잡을 실패시키지 않음). 결과가 정리되면 막기로 바꾼다.
+# 도구는 버전과 SHA-256 을 고정해 내려받는다(공급망 고정). 버전을 올릴 때는 아래 env 의 두 값을 함께 바꾼다.
+# 오탐 처리: 비밀키는 저장소 루트 .gitleaksignore 에 지문 한 줄, 의존성은 osv-scanner.toml 의 [[IgnoredVulns]],
+#   Semgrep 은 해당 줄에 `nosemgrep: <규칙 id>` 주석.
+name: 보안 검사
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "47 18 * * *" # 매일 03:47 (KST)
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: security-scan-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  GITLEAKS_VERSION: 8.30.1
+  GITLEAKS_SHA256: 551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb
+  OSV_SCANNER_VERSION: 2.7.0
+  OSV_SCANNER_SHA256: 160c6253e2922e9e0a6a9771c5c4c40a4b3c6090b34a3cdd5e80c96cc2e4218b
+  SEMGREP_VERSION: 1.180.0
+
+jobs:
+  secrets:
+    name: 비밀키 유출 검사(gitleaks, 전체 이력)
+    runs-on: ${{ fromJSON(vars.RUNS_ON_LINUX || '["self-hosted","linux","x64","hub"]') }}
+    timeout-minutes: 20
+    steps:
+      - name: 소스 가져오기(전체 이력)
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: gitleaks 설치(버전·체크섬 고정)
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/gitleaks"
+          f="gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
+          mkdir -p "$d"
+          curl -fsSL --retry 3 -o "$d/$f" "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/$f"
+          echo "${GITLEAKS_SHA256}  $d/$f" | sha256sum -c -
+          tar -xzf "$d/$f" -C "$d" gitleaks
+
+      - name: 커밋 이력 전체 검사(찾은 값은 가림)
+        run: |
+          set -uo pipefail
+          report="$RUNNER_TEMP/gitleaks.json"
+          rc=0
+          "$RUNNER_TEMP/gitleaks/gitleaks" git . --redact --no-banner --verbose --exit-code 1 \
+            --report-format json --report-path "$report" || rc=$?
+          n=$(jq 'length' "$report" 2>/dev/null || echo 0)
+          {
+            echo "### 비밀키 유출 검사: ${n}건"
+            if [ "$n" != 0 ]; then
+              echo
+              echo "| 규칙 | 파일:줄 | 커밋 | 지문 |"
+              echo "|---|---|---|---|"
+              jq -r '.[] | "| \(.RuleID) | \(.File):\(.StartLine) | \(.Commit[0:7]) | `\(.Fingerprint)` |"' "$report"
+              echo
+              echo "값은 가려져 있습니다. 진짜 키라면 **먼저 그 키를 폐기·교체**하십시오(이력에서 지워도 이미 복제됐을 수 있습니다)."
+              echo "오탐이면 지문을 저장소 루트 \`.gitleaksignore\` 에 한 줄씩 추가합니다."
+            fi
+          } >>"$GITHUB_STEP_SUMMARY"
+          exit "$rc"
+
+  dependencies:
+    name: 의존성 취약점 검사(osv-scanner)
+    runs-on: ${{ fromJSON(vars.RUNS_ON_LINUX || '["self-hosted","linux","x64","hub"]') }}
+    timeout-minutes: 20
+    steps:
+      - name: 소스 가져오기
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: osv-scanner 설치(버전·체크섬 고정)
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/osv"
+          mkdir -p "$d"
+          curl -fsSL --retry 3 -o "$d/osv-scanner" \
+            "https://github.com/google/osv-scanner/releases/download/v${OSV_SCANNER_VERSION}/osv-scanner_linux_amd64"
+          echo "${OSV_SCANNER_SHA256}  $d/osv-scanner" | sha256sum -c -
+          chmod +x "$d/osv-scanner"
+
+      - name: 잠금 파일 전체 검사
+        run: |
+          set -uo pipefail
+          out="$RUNNER_TEMP/osv.md"
+          rc=0
+          "$RUNNER_TEMP/osv/osv-scanner" scan source -r --format markdown . >"$out" || rc=$?
+          cat "$out"
+          {
+            echo "### 의존성 취약점 검사"
+            case $rc in
+              0) echo "알려진 취약점 없음." ;;
+              128) echo "검사할 잠금 파일이 없습니다(Cargo.lock, package-lock.json, go.mod 등)." ;;
+              *) cat "$out" ;;
+            esac
+          } >>"$GITHUB_STEP_SUMMARY"
+          if [ "$rc" = 128 ]; then
+            exit 0
+          fi
+          if [ "$rc" = 1 ] && [ "$GITHUB_EVENT_NAME" = pull_request ]; then
+            echo "::warning title=의존성 취약점::알려진 취약점이 있습니다(요약 참조). PR 에서는 경고만 하고, 기본 브랜치·야간 검사에서는 실패로 알립니다."
+            exit 0
+          fi
+          exit "$rc"
+
+  code:
+    name: 코드 보안 분석(Semgrep CE, 알림만)
+    runs-on: ${{ fromJSON(vars.RUNS_ON_LINUX || '["self-hosted","linux","x64","hub"]') }}
+    timeout-minutes: 30
+    steps:
+      - name: 소스 가져오기
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Semgrep 설치(버전 고정)
+        run: |
+          set -euo pipefail
+          python3 -m venv "$RUNNER_TEMP/semgrep"
+          "$RUNNER_TEMP/semgrep/bin/pip" install --quiet --disable-pip-version-check "semgrep==${SEMGREP_VERSION}"
+
+      - name: 검사(결과는 요약에만, 잡은 실패시키지 않음)
+        env:
+          SEMGREP_SEND_METRICS: "off"
+          SEMGREP_ENABLE_VERSION_CHECK: "0"
+        run: |
+          set -uo pipefail
+          report="$RUNNER_TEMP/semgrep.json"
+          rc=0
+          "$RUNNER_TEMP/semgrep/bin/semgrep" scan --config p/default --metrics off --json --output "$report" \
+            --timeout 60 --max-target-bytes 1000000 . || rc=$?
+          n=$(jq '.results | length' "$report" 2>/dev/null || echo 0)
+          {
+            echo "### 코드 보안 분석(Semgrep CE): ${n}건"
+            if [ "$n" != 0 ]; then
+              echo
+              echo "| 심각도 | 규칙 | 위치 | 설명 |"
+              echo "|---|---|---|---|"
+              jq -r '.results | sort_by(.extra.severity) | .[:200][]
+                | "| \(.extra.severity) | \(.check_id | split(".") | last) | \(.path):\(.start.line) | \(.extra.message | gsub("[\r\n|]"; " ") | .[0:160]) |"' "$report"
+            fi
+          } >>"$GITHUB_STEP_SUMMARY"
+          if [ "$rc" -ge 2 ]; then
+            echo "::warning title=Semgrep::검사 중 오류(종료 코드 $rc) — 로그 확인"
+          fi
+          echo "Semgrep 결과 ${n}건(알림만)"
+          exit 0
